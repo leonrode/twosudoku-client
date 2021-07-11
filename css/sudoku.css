@@ -200,6 +200,8 @@
     justify-content: center;
     margin-top: 10px;
   }
+
+
   .keynum {
     font-size: 20px;
     margin: 5px;
@@ -207,7 +209,7 @@
     height: 30px;
   }
   .cell {
-    font-size: 20px;
+    font-size: 5vw;
   }
 
   .notebutton,
