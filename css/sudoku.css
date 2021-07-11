@@ -218,4 +218,7 @@
     width: 30px;
     height: 30px;
   }
+  .notes > div {
+    font-size: 0.5rem;
+  }
 }
