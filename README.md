@@ -16,4 +16,4 @@ This program is released under the MIT License. More information can be found in
 
 ## Contact
 
-Bugs? Suggesstions? Feel free to email me [here](mailto:leon.rode13@gmail.com) or on Discord at lionrocker#3960.
+Bugs? Suggestions? Feel free to email me [here](mailto:leon.rode13@gmail.com) or on Discord at lionrocker#3960.
