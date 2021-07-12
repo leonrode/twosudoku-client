@@ -49,6 +49,22 @@ window.onload = () => {
           selectedCell.classList.toggle("selected-cell");
           selectedCell = newCell;
         }
+      } else if (key === "Backspace") {
+        if (selectedCell && !selectedCell.predefined) {
+          for (const cell of erroredCells) {
+            cell.classList.remove("errored-cell");
+          }
+          erroredCells.length = 0;
+          selectedCell.textContent = "";
+          socket.emit(
+            "number_placed",
+            JSON.stringify({
+              x: selectedCell.x,
+              y: selectedCell.y,
+              value: "",
+            })
+          );
+        }
       } else if (validNums.includes(key)) {
         if (selectedCell && !selectedCell.predefined) {
           if (noting) {
