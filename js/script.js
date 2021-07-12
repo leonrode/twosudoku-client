@@ -1,3 +1,7 @@
+/*
+TODO: FIX FROM YELLOW TO BLUE
+*/
+
 const difficultyButtons = document.getElementById("difficulty-voting");
 let socket;
 let sudokuBoard = new Array(9);
@@ -55,7 +59,8 @@ window.onload = () => {
             cell.classList.remove("errored-cell");
           }
           erroredCells.length = 0;
-          selectedCell.textContent = "";
+          const valueDiv = selectedCell.getElementsByClassName("value")[0];
+          valueDiv.textContent = "";
           socket.emit(
             "number_placed",
             JSON.stringify({
@@ -69,26 +74,44 @@ window.onload = () => {
         if (selectedCell && !selectedCell.predefined) {
           if (noting) {
             const noteDiv = selectedCell.getElementsByClassName("notes")[0];
-
+            const valueDiv = selectedCell.getElementsByClassName("value")[0];
             const notes = noteDiv.getElementsByTagName("div");
             for (const note of notes) {
-              if (note.className === `n${key}` && note.textContent === "") {
-                note.textContent = key;
+              if (note.className === `n${key}`) {
+                if (note.textContent === "" && valueDiv.textContent === "") {
+                  note.textContent = key;
 
-                socket.emit(
-                  "note_placed",
-                  JSON.stringify({
-                    x: selectedCell.x,
-                    y: selectedCell.y,
-                    noteValue: key,
-                  })
-                );
+                  socket.emit(
+                    "note_placed",
+                    JSON.stringify({
+                      x: selectedCell.x,
+                      y: selectedCell.y,
+                      noteValue: key,
+                    })
+                  );
+                } else {
+                  note.textContent = "";
+
+                  socket.emit(
+                    "note_placed",
+                    JSON.stringify({
+                      x: selectedCell.x,
+                      y: selectedCell.y,
+                      noteValue: "",
+                    })
+                  );
+                }
               }
             }
           } else {
-            selectedCell.textContent = key;
+            const valueDiv = selectedCell.getElementsByClassName("value")[0];
+            valueDiv.textContent = key;
             for (const cell of erroredCells) {
               cell.classList.remove("errored-cell");
+            }
+            const noteDiv = selectedCell.getElementsByClassName("notes")[0];
+            for (const note of Array.from(noteDiv.children)) {
+              note.textContent = "";
             }
             erroredCells.length = 0;
             checkCollisions(selectedCell);
@@ -109,7 +132,7 @@ window.onload = () => {
   Array.from(difficultyButtons.children).forEach((button) => {
     button.addEventListener("click", () => {
       if (!voted) {
-        button.style.border = "1px solid #feec44";
+        button.style.border = "1px solid #44a4fe";
         socket.emit("difficulty_voted", button.textContent);
         voted = true;
       }
@@ -135,7 +158,11 @@ const assignClientListeners = () => {
 
   socket.on("number_received", (arg) => {
     const { x, y, value } = JSON.parse(arg);
-    sudokuBoard[y][x].textContent = value;
+    sudokuBoard[y][x].getElementsByClassName("value").textContent = value;
+
+    Array.from(sudokuBoard[y][x].querySelector(".notes").children).forEach(
+      (note) => (note.textContent = "")
+    );
   });
 
   socket.on("note_received", (arg) => {
@@ -233,12 +260,13 @@ const loadSudoku = (board) => {
   if (document.getElementById("table")) {
     return;
   }
-  /* // remove input container
-  document.getElementsByTagName("main")[0].style.display = "none";
+  // remove input container
+
   document.getElementById("win-modal").style.display = "none";
-  document.getElementById("interact")
-    ? (document.getElementById("interact").style.display = "none")
-    : null; */
+  if (document.getElementById("interact"))
+    document.getElementById("interact")
+      ? (document.getElementById("interact").style.display = "none")
+      : null;
 
   const table = document.createElement("div");
   table.id = "table";
@@ -252,14 +280,16 @@ const loadSudoku = (board) => {
       // create cell
       const cell = document.createElement("div");
       cell.classList.add("cell");
+      cell.x = x;
+      cell.y = y;
 
       // determine if the cell should be colored or not
       if (
-        (x < 3 && y < 3) ||
-        (x > 5 && y < 3) ||
-        (x > 2 && x < 6 && y > 2 && y < 6) ||
-        (x < 3 && y > 5) ||
-        (x > 5 && y > 5)
+        isCellInTopLeftBox(cell) ||
+        isCellInTopRightBox(cell) ||
+        isCellInMidMidBox(cell) ||
+        isCellInBottomLeftBox(cell) ||
+        isCellInBottomRightBox(cell)
       ) {
         cell.classList.add("colored");
       }
@@ -297,8 +327,7 @@ const loadSudoku = (board) => {
       if (predefined) {
         cell.classList.add("predefined-cell");
       }
-      cell.x = x;
-      cell.y = y;
+
       cell.appendChild(notesDiv);
       cell.appendChild(valueDiv);
 
@@ -325,24 +354,43 @@ const loadSudoku = (board) => {
       if (selectedCell && !selectedCell.predefined) {
         if (noting) {
           const noteDiv = selectedCell.getElementsByClassName("notes")[0];
-
+          const valueDiv = selectedCell.getElementsByClassName("value")[0];
           const notes = noteDiv.getElementsByTagName("div");
           for (const note of notes) {
-            if (note.className === `n${i}` && note.textContent === "") {
-              note.textContent = i;
+            if (note.className === `n${i}`) {
+              if (note.textContent === "" && valueDiv.textContent === "") {
+                note.textContent = i;
 
-              socket.emit(
-                "note_placed",
-                JSON.stringify({
-                  x: selectedCell.x,
-                  y: selectedCell.y,
-                  noteValue: i,
-                })
-              );
+                socket.emit(
+                  "note_placed",
+                  JSON.stringify({
+                    x: selectedCell.x,
+                    y: selectedCell.y,
+                    noteValue: i,
+                  })
+                );
+              } else {
+                note.textContent = "";
+
+                socket.emit(
+                  "note_placed",
+                  JSON.stringify({
+                    x: selectedCell.x,
+                    y: selectedCell.y,
+                    noteValue: "",
+                  })
+                );
+              }
             }
           }
         } else {
-          selectedCell.textContent = i;
+          const valueDiv = selectedCell.getElementsByClassName("value")[0];
+          valueDiv.textContent = i;
+
+          const noteDiv = selectedCell.getElementsByClassName("notes")[0];
+          for (const note of Array.from(noteDiv.children)) {
+            note.textContent = "";
+          }
           for (const cell of erroredCells) {
             cell.classList.remove("errored-cell");
           }
@@ -395,7 +443,9 @@ const loadSudoku = (board) => {
         cell.classList.remove("errored-cell");
       }
       erroredCells.length = 0;
-      selectedCell.textContent = "";
+      const valueDiv = selectedCell.getElementsByClassName("value")[0];
+      valueDiv.textContent = "";
+
       socket.emit(
         "number_placed",
         JSON.stringify({
@@ -426,158 +476,228 @@ const loadSudoku = (board) => {
 };
 
 const checkCollisions = (cell) => {
+  const value = cell.querySelector(".value").textContent;
   // check row
-  for (let col = 0; col < 9; col++) {
-    const otherCell = sudokuBoard[cell.y][col];
-    if (otherCell !== cell && otherCell.textContent === cell.textContent) {
+
+  getCellRowCoords(cell).forEach((coords) => {
+    const [x, y] = coords;
+    const otherCell = sudokuBoard[y][x];
+    const otherValue = otherCell.querySelector(".value").textContent;
+
+    if (otherCell !== cell && otherValue === value) {
       cell.classList.add("errored-cell");
       otherCell.classList.add("errored-cell");
       erroredCells.push(cell);
       erroredCells.push(otherCell);
     }
-  }
+  });
 
-  // check col
+  getCellColCoords(cell).forEach((coords) => {
+    const [x, y] = coords;
+    const otherCell = sudokuBoard[y][x];
+    const otherValue = otherCell.querySelector(".value").textContent;
 
-  for (let row = 0; row < 9; row++) {
-    const otherCell = sudokuBoard[row][cell.x];
-    if (otherCell !== cell && otherCell.textContent === cell.textContent) {
+    if (otherCell !== cell && otherValue === value) {
       cell.classList.add("errored-cell");
       otherCell.classList.add("errored-cell");
       erroredCells.push(cell);
       erroredCells.push(otherCell);
     }
-  }
+  });
 
   // check box
+  getCellBoxCoords(cell).forEach((coord) => {
+    const [x, y] = coord;
+    const otherCell = sudokuBoard[y][x];
+    const otherValue = otherCell.querySelector(".value").textContent;
 
-  // top left
-  if (cell.x < 3 && cell.y < 3) {
-    for (let row = 0; row < 3; row++) {
-      for (let col = 0; col < 3; col++) {
-        const otherCell = sudokuBoard[row][col];
-        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
-          cell.classList.add("errored-cell");
-          otherCell.classList.add("errored-cell");
-          erroredCells.push(cell);
-          erroredCells.push(otherCell);
-        }
-      }
+    if (otherCell !== cell && otherValue === value) {
+      cell.classList.add("errored-cell");
+      otherCell.classList.add("errored-cell");
+      erroredCells.push(cell);
+      erroredCells.push(otherCell);
     }
+  });
+};
+
+const isCellInTopLeftBox = (cell) => {
+  return cell.x < 3 && cell.y < 3;
+};
+
+const isCellInTopMidBox = (cell) => {
+  return cell.x > 2 && cell.x < 6 && cell.y < 3;
+};
+const isCellInTopRightBox = (cell) => {
+  return cell.x > 5 && cell.y < 3;
+};
+const isCellInMidLeftBox = (cell) => {
+  return cell.x < 3 && cell.y < 6 && cell.y > 2;
+};
+const isCellInMidMidBox = (cell) => {
+  return cell.x < 6 && cell.x > 2 && cell.y < 6 && cell.y > 2;
+};
+
+const isCellInMidRightBox = (cell) => {
+  return cell.x > 5 && cell.y < 6 && cell.y > 2;
+};
+
+const isCellInBottomLeftBox = (cell) => {
+  return cell.x < 3 && cell.y > 5;
+};
+
+const isCellInBottomMidBox = (cell) => {
+  return cell.x > 2 && cell.x < 6 && cell.y > 5;
+};
+const isCellInBottomRightBox = (cell) => {
+  return cell.x > 5 && cell.y > 5;
+};
+
+// gets all 9 coord pairs of the cells inside the cell's box
+const getCellBoxCoords = (cell) => {
+  // top left
+  if (isCellInTopLeftBox(cell)) {
+    return [
+      [0, 0],
+      [0, 1],
+      [0, 2],
+      [1, 0],
+      [1, 1],
+      [1, 2],
+      [2, 0],
+      [2, 1],
+      [2, 2],
+    ];
   }
 
   // top mid
-  else if (cell.x > 2 && cell.x < 6 && cell.y < 3) {
-    for (let row = 0; row < 3; row++) {
-      for (let col = 3; col < 6; col++) {
-        const otherCell = sudokuBoard[row][col];
-        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
-          cell.classList.add("errored-cell");
-          otherCell.classList.add("errored-cell");
-          erroredCells.push(cell);
-          erroredCells.push(otherCell);
-        }
-      }
-    }
+  else if (isCellInTopMidBox(cell)) {
+    return [
+      [3, 0],
+      [3, 1],
+      [3, 2],
+      [4, 0],
+      [4, 1],
+      [4, 2],
+      [5, 0],
+      [5, 1],
+      [5, 2],
+    ];
   }
 
   // top right
-  else if (cell.x > 5 && cell.y < 3) {
-    for (let row = 0; row < 3; row++) {
-      for (let col = 6; col < 9; col++) {
-        const otherCell = sudokuBoard[row][col];
-        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
-          cell.classList.add("errored-cell");
-          otherCell.classList.add("errored-cell");
-          erroredCells.push(cell);
-          erroredCells.push(otherCell);
-        }
-      }
-    }
+  else if (isCellInTopRightBox(cell)) {
+    return [
+      [6, 0],
+      [6, 1],
+      [6, 2],
+      [7, 0],
+      [7, 1],
+      [7, 2],
+      [8, 0],
+      [8, 1],
+      [8, 2],
+    ];
   }
 
   // mid left
-  else if (cell.x < 3 && cell.y < 6 && cell.y > 2) {
-    for (let row = 3; row < 6; row++) {
-      for (let col = 0; col < 3; col++) {
-        const otherCell = sudokuBoard[row][col];
-        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
-          cell.classList.add("errored-cell");
-          otherCell.classList.add("errored-cell");
-          erroredCells.push(cell);
-          erroredCells.push(otherCell);
-        }
-      }
-    }
+  else if (isCellInMidLeftBox(cell)) {
+    return [
+      [0, 3],
+      [0, 4],
+      [0, 5],
+      [1, 3],
+      [1, 4],
+      [1, 5],
+      [2, 3],
+      [2, 4],
+      [2, 5],
+    ];
   }
   // mid mid
-  else if (cell.x < 6 && cell.x > 2 && cell.y < 6 && cell.y > 2) {
-    for (let row = 3; row < 6; row++) {
-      for (let col = 0; col < 3; col++) {
-        const otherCell = sudokuBoard[row][col];
-        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
-          cell.classList.add("errored-cell");
-          otherCell.classList.add("errored-cell");
-          erroredCells.push(cell);
-          erroredCells.push(otherCell);
-        }
-      }
-    }
+  else if (isCellInMidMidBox(cell)) {
+    return [
+      [3, 3],
+      [3, 4],
+      [3, 5],
+      [4, 3],
+      [4, 4],
+      [4, 5],
+      [5, 3],
+      [5, 4],
+      [5, 5],
+    ];
   }
   // mid right
-  else if (cell.x > 5 && cell.y < 6 && cell.y > 2) {
-    for (let row = 3; row < 6; row++) {
-      for (let col = 6; col < 9; col++) {
-        const otherCell = sudokuBoard[row][col];
-        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
-          cell.classList.add("errored-cell");
-          otherCell.classList.add("errored-cell");
-          erroredCells.push(cell);
-          erroredCells.push(otherCell);
-        }
-      }
-    }
+  else if (isCellInMidRightBox(cell)) {
+    return [
+      [6, 3],
+      [6, 4],
+      [6, 5],
+      [7, 3],
+      [7, 4],
+      [7, 5],
+      [8, 3],
+      [8, 4],
+      [8, 5],
+    ];
   }
   // bottom left
-  else if (cell.x < 3 && cell.y > 5) {
-    for (let row = 6; row < 9; row++) {
-      for (let col = 0; col < 3; col++) {
-        const otherCell = sudokuBoard[row][col];
-        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
-          cell.classList.add("errored-cell");
-          otherCell.classList.add("errored-cell");
-          erroredCells.push(cell);
-          erroredCells.push(otherCell);
-        }
-      }
-    }
+  else if (isCellInBottomLeftBox(cell)) {
+    return [
+      [0, 6],
+      [0, 7],
+      [0, 8],
+      [1, 6],
+      [1, 7],
+      [1, 8],
+      [2, 6],
+      [2, 7],
+      [2, 8],
+    ];
   }
   // bottom mid
-  else if (cell.x > 2 && cell.x < 6 && cell.y < 3) {
-    for (let row = 0; row < 3; row++) {
-      for (let col = 3; col < 6; col++) {
-        const otherCell = sudokuBoard[row][col];
-        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
-          cell.classList.add("errored-cell");
-          otherCell.classList.add("errored-cell");
-          erroredCells.push(cell);
-          erroredCells.push(otherCell);
-        }
-      }
-    }
+  else if (isCellInBottomMidBox(cell)) {
+    return [
+      [3, 6],
+      [3, 7],
+      [3, 8],
+      [4, 6],
+      [4, 7],
+      [4, 8],
+      [5, 6],
+      [5, 7],
+      [5, 8],
+    ];
   }
   //bottom right
-  else if (cell.x > 5 && cell.x > 5) {
-    for (let row = 6; row < 9; row++) {
-      for (let col = 6; col < 9; col++) {
-        const otherCell = sudokuBoard[row][col];
-        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
-          cell.classList.add("errored-cell");
-          otherCell.classList.add("errored-cell");
-          erroredCells.push(cell);
-          erroredCells.push(otherCell);
-        }
-      }
-    }
+  else if (isCellInBottomRightBox(cell)) {
+    return [
+      [6, 6],
+      [6, 7],
+      [6, 8],
+      [7, 6],
+      [7, 7],
+      [7, 8],
+      [8, 6],
+      [8, 7],
+      [8, 8],
+    ];
   }
+};
+
+// gets all 9 coord pairs of cells inside the cell's row
+const getCellRowCoords = (cell) => {
+  let coords = [];
+  for (let col = 0; col < 9; col++) {
+    coords.push([col, cell.y]);
+  }
+  return coords;
+};
+
+const getCellColCoords = (cell) => {
+  let coords = [];
+  for (let row = 0; row < 9; row++) {
+    coords.push([cell.x, row]);
+  }
+  return coords;
 };
