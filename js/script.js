@@ -375,6 +375,10 @@ const loadSudoku = (board) => {
 
   eraseButton.addEventListener("click", () => {
     if (selectedCell && !selectedCell.predefined) {
+      for (const cell of erroredCells) {
+        cell.classList.remove("errored-cell");
+      }
+      erroredCells.length = 0;
       selectedCell.textContent = "";
       socket.emit(
         "number_placed",
@@ -426,6 +430,138 @@ const checkCollisions = (cell) => {
       otherCell.classList.add("errored-cell");
       erroredCells.push(cell);
       erroredCells.push(otherCell);
+    }
+  }
+
+  // check box
+
+  // top left
+  if (cell.x < 3 && cell.y < 3) {
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        const otherCell = sudokuBoard[row][col];
+        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
+          cell.classList.add("errored-cell");
+          otherCell.classList.add("errored-cell");
+          erroredCells.push(cell);
+          erroredCells.push(otherCell);
+        }
+      }
+    }
+  }
+
+  // top mid
+  else if (cell.x > 2 && cell.x < 6 && cell.y < 3) {
+    for (let row = 0; row < 3; row++) {
+      for (let col = 3; col < 6; col++) {
+        const otherCell = sudokuBoard[row][col];
+        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
+          cell.classList.add("errored-cell");
+          otherCell.classList.add("errored-cell");
+          erroredCells.push(cell);
+          erroredCells.push(otherCell);
+        }
+      }
+    }
+  }
+
+  // top right
+  else if (cell.x > 5 && cell.y < 3) {
+    for (let row = 0; row < 3; row++) {
+      for (let col = 6; col < 9; col++) {
+        const otherCell = sudokuBoard[row][col];
+        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
+          cell.classList.add("errored-cell");
+          otherCell.classList.add("errored-cell");
+          erroredCells.push(cell);
+          erroredCells.push(otherCell);
+        }
+      }
+    }
+  }
+
+  // mid left
+  else if (cell.x < 3 && cell.y < 6 && cell.y > 2) {
+    for (let row = 3; row < 6; row++) {
+      for (let col = 0; col < 3; col++) {
+        const otherCell = sudokuBoard[row][col];
+        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
+          cell.classList.add("errored-cell");
+          otherCell.classList.add("errored-cell");
+          erroredCells.push(cell);
+          erroredCells.push(otherCell);
+        }
+      }
+    }
+  }
+  // mid mid
+  else if (cell.x < 6 && cell.x > 2 && cell.y < 6 && cell.y > 2) {
+    for (let row = 3; row < 6; row++) {
+      for (let col = 0; col < 3; col++) {
+        const otherCell = sudokuBoard[row][col];
+        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
+          cell.classList.add("errored-cell");
+          otherCell.classList.add("errored-cell");
+          erroredCells.push(cell);
+          erroredCells.push(otherCell);
+        }
+      }
+    }
+  }
+  // mid right
+  else if (cell.x > 5 && cell.y < 6 && cell.y > 2) {
+    for (let row = 3; row < 6; row++) {
+      for (let col = 6; col < 9; col++) {
+        const otherCell = sudokuBoard[row][col];
+        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
+          cell.classList.add("errored-cell");
+          otherCell.classList.add("errored-cell");
+          erroredCells.push(cell);
+          erroredCells.push(otherCell);
+        }
+      }
+    }
+  }
+  // bottom left
+  else if (cell.x < 3 && cell.y > 5) {
+    for (let row = 6; row < 9; row++) {
+      for (let col = 0; col < 3; col++) {
+        const otherCell = sudokuBoard[row][col];
+        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
+          cell.classList.add("errored-cell");
+          otherCell.classList.add("errored-cell");
+          erroredCells.push(cell);
+          erroredCells.push(otherCell);
+        }
+      }
+    }
+  }
+  // bottom mid
+  else if (cell.x > 2 && cell.x < 6 && cell.y < 3) {
+    for (let row = 0; row < 3; row++) {
+      for (let col = 3; col < 6; col++) {
+        const otherCell = sudokuBoard[row][col];
+        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
+          cell.classList.add("errored-cell");
+          otherCell.classList.add("errored-cell");
+          erroredCells.push(cell);
+          erroredCells.push(otherCell);
+        }
+      }
+    }
+  }
+  //bottom right
+  else if (cell.x > 5 && cell.x > 5) {
+    for (let row = 6; row < 9; row++) {
+      for (let col = 6; col < 9; col++) {
+        const otherCell = sudokuBoard[row][col];
+        if (otherCell !== cell && otherCell.textContent === cell.textContent) {
+          cell.classList.add("errored-cell");
+          otherCell.classList.add("errored-cell");
+          erroredCells.push(cell);
+          erroredCells.push(otherCell);
+        }
+      }
     }
   }
 };
