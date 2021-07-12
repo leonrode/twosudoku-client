@@ -1,0 +1,151 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+
+  background-color: #090806;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: "Quicksand", sans-serif;
+}
+main {
+  border: 1px solid #f6f6f6;
+  padding: 50px;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#direction {
+  color: #f6f6f6;
+  text-align: center;
+  font-weight: 500;
+}
+#portdirection {
+  color: #f6f6f6;
+  text-align: center;
+  font-weight: 500;
+}
+input {
+  border: 1px solid #f6f6f6;
+  background-color: #090806;
+  outline: none;
+  color: #f6f6f6;
+  margin: 25px;
+  margin-bottom: 15px;
+
+  height: 35px;
+  width: 200px;
+  padding: 10px;
+  border-radius: 5px;
+
+  font-size: 1rem;
+  letter-spacing: 1.5px;
+}
+
+input:focus {
+  border: 1px solid #feec44;
+}
+
+#port {
+  margin-top: 15px;
+}
+#error {
+  display: none;
+  color: #c11602;
+}
+#connect {
+  color: #f6f6f6;
+  text-align: center;
+  width: 60%;
+  border: 1px solid #f6f6f6;
+  padding: 10px;
+  margin: 25px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#connect:hover {
+  border: 1px solid #feec44;
+}
+
+#indicator {
+  display: none;
+  color: #f6f6f6;
+  text-align: center;
+}
+
+#win-modal {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+
+}
+
+#modal-content {
+  width: 500px;
+  height: 500px;
+  border: 1px solid #f6f6f6;
+  background-color: #090806;
+  border-radius: 16px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  color: #f6f6f6;
+
+  padding: 20px;
+}
+
+#modal-time {
+  font-size: 5rem;
+}
+
+#diff-header {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+#difficulty-voting {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
+.difficulty {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #f6f6f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  cursor: pointer;
+}
+
+.difficulty:hover {
+  border: 1px solid #feec44;
+  color:  #feec44;
+}
+#current-voting {
+  font-size: 1.2rem;
+}
+
+#server-time {
+  font-size: 1rem;
+}

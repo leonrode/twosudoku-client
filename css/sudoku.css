@@ -1,0 +1,226 @@
+#table {
+  color: #f6f6f6;
+  border-collapse: collapse;
+
+  width: 650px;
+  height: 650px;
+  position: relative;
+  font-family: "Quicksand", sans-serif;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+.cell {
+  position: relative;
+  border-collapse: collapse;
+  width: 11.1111%;
+  height: 11.1111%;
+
+  border: 0.5px solid #f6f6f6;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 40px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cell:hover {
+  border: 3px solid #feec44;
+}
+
+.colored {
+  background-color: rgb(35, 35, 35);
+}
+
+.box:not(.colored) > .cell {
+  background-color: #090806;
+}
+
+.notes {
+  font-size: 14px;
+}
+
+.n1 {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+}
+
+.n2 {
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.n3 {
+  position: absolute;
+  top: 3px;
+  right: 5px;
+}
+
+.n4 {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+}
+
+.n5 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.n6 {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+}
+
+.n7 {
+  position: absolute;
+  bottom: 3px;
+  left: 5px;
+}
+
+.n8 {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.n9 {
+  position: absolute;
+  bottom: 3px;
+  right: 5px;
+}
+.selected-cell {
+  border: 3px solid #feec44;
+
+}
+#buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-left: 100px;
+}
+#keypad {
+  width: 300px;
+  height: 300px;
+  color: #f6f6f6;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    ". . ."
+    ". . ."
+    ". . .";
+}
+
+.keynum {
+  margin: 20px;
+  user-select: none;
+  font-size: 30px;
+  border: 1px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.predefined-cell {
+  color: #feec44;
+}
+
+
+#interact {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+.notebutton,
+.erasebutton {
+  color: #f6f6f6;
+  border: 1px solid #f6f6f6;
+  padding: 10px;
+  cursor: pointer;
+  user-select: none;
+  margin-left: 10px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.noteon {
+  border: 1px solid #feec44;
+  color: #feec44;
+}
+
+.errored-cell {
+  color: #c11602;
+}
+
+.connection-count {
+  color: #f6f6f6;
+  font-size: 1.2rem;
+  margin-top: 20px;
+}
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+    padding: 5px;
+  }
+
+  #table {
+    width: calc(100vw - 20px);
+    height: calc(100vw - 20px);
+  }
+
+  #buttons {
+    margin: 0;
+  }
+  #keypad {
+    width: 100vw;
+    height: 40px;
+
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+
+  .keynum {
+    font-size: 20px;
+    margin: 5px;
+    width: 30px;
+    height: 30px;
+  }
+  .cell {
+    font-size: 5vw;
+  }
+
+  .notebutton,
+  .erasebutton {
+    font-size: 15px;
+    padding: 5px;
+    margin-top: 10px;
+    width: 30px;
+    height: 30px;
+  }
+  .notes > div {
+    font-size: 0.5rem;
+  }
+}
