@@ -29,11 +29,11 @@
 }
 
 .cell:hover {
-  border: 3px solid #feec44;
+  border: 3px solid #44a4fe;
 }
 
 .colored {
-  background-color: rgb(35, 35, 35);
+  background-color: rgb(49, 49, 49);
 }
 
 .box:not(.colored) > .cell {
@@ -103,7 +103,7 @@
   right: 5px;
 }
 .selected-cell {
-  border: 3px solid #feec44;
+  border: 3px solid #44a4fe;
 
 }
 #buttons {
@@ -139,7 +139,7 @@
 }
 
 .predefined-cell {
-  color: #feec44;
+  color: #44a4fe;
 }
 
 
@@ -165,8 +165,8 @@
   justify-content: center;
 }
 .noteon {
-  border: 1px solid #feec44;
-  color: #feec44;
+  border: 1px solid #44a4fe;
+  color: #44a4fe;
 }
 
 .errored-cell {
